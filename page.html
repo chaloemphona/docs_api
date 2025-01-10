@@ -1,0 +1,1454 @@
+<!doctype html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หลักเกณฑ์และแนวทางปฏิบัติที่ดีที่สุดสำหรับการออกแบบ RESTful API</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+
+      
+        .sidebar {
+            width: 250px;
+            background-color: #eceded;
+            padding: 20px;
+            border-right: 10px solid #ddd;
+            height: 100vh;
+            position: fixed; 
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .sidebar a {
+            display: block;
+            margin: 10px 0;
+            color: #000000;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .sidebar a.active {
+            color: white;
+            background-color: #ffa18e;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        
+        .content {
+            margin-left: 300px;
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
+
+        .content h1 {
+            font-size: 28px;
+            margin-top: 0;
+        }
+
+        .content section {
+            margin-bottom: 40px;
+        }
+
+        .content h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            color: #333;
+        }
+
+        .content p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .note-box {
+        background-color: #f9f9f9;
+        border-left: 4px solid #007BFF;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .note-box h3 {
+            margin-top: 0;
+            color: #007BFF;
+            font-size: 16px;
+        }
+
+        .note-box p {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .note-box ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+            list-style-type: disc;
+        }
+
+        .note-box ul li {
+            color: #555;
+        }
+
+        .note-box ul li strong {
+            color: #333;
+        }
+
+
+        /* table {
+        border: 1px solid #ddd; 
+        border-collapse: collapse; 
+        width: 80%;
+        max-width: 800px; 
+        text-align: left; 
+        background-color: #fff; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        } */
+
+        /* th, td {
+        padding: 12px; 
+        border: 1px solid #ddd; 
+        } */
+/* 
+        th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        } */
+
+        caption {
+        caption-side: top;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 8px;
+        }
+
+        code {
+        font-size: 1.2em; 
+        font-weight: bold; 
+        color: #d94416;  
+        }
+
+        /* section {
+            margin-left: 220px;
+            padding: 20px;
+            border-bottom: 2px solid #ddd;
+        } */
+
+
+        /* .json-box {
+        border: 1px solid #000;       
+        padding: 10px;               
+        border-radius: 5px;           
+        background-color: #ffffff;    
+        font-family: monospace;  
+        font-size: 16px;      
+        white-space: pre-wrap;       
+        width: 400px;                 
+        height: 130px;                
+        overflow: auto;               
+        } */
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h3>สารบัญ</h3>
+        <a href="#Intro">Intro</a>
+        <a href="#API">API</a>
+        <!-- <ul>
+            <li><a href="#REST">REST</a></li>
+            <li><a href="#RESTful-API">RESTful API</a></li>
+        </ul> -->
+        <a href="#RESTful-API-Design">RESTful-API-Design</a>
+        <ul>
+            <li><a href="#disc">คำศัพท์</a></li>
+            <li><a href="#desc">คำอธิบาย</a></li>
+            <li><a href="#GOOD-Design">รูปเเบบการออกเเบบที่ดี</a></li>
+            <li><a href="#CRUD">ตัวอย่าง CRUD API </a></li>
+            <ul>
+                <li><a href="#READ">READ</a></li>
+                <li><a href="#CREATE">CREATE</a></li>
+                <li><a href="#UPDATE">UPDATE</a></li>
+                <li><a href="#DELETE">DELETE</a></li>
+                <li><a href="#ROUTES">ROUTES RESOURCE</a></li>
+            </ul>
+        </ul>
+        <a href="#HTTP methods">HTTP methods</a>
+        <a href="#HTTP Status Code">HTTP Status Code</a>
+        <a href="#Response Data Format">Response Data Format</a>
+        <ul>
+            <li><a href="#Result Messages">Result Messages</a></li>
+            <li><a href="#Error Messages">Error Messages</a></li>
+        </ul>
+        <a href="#FSP">Filtering, Sorting, Pagination</a>
+        <ul>
+            <li><a href="#Filtering">Filtering</a></li>
+            <li><a href="#Sorting">Sorting</a></li>
+            <li><a href="#Pagination">Pagination</a></li>
+        </ul>
+        <a href="#API Versioning">API Versioning</a>
+        <ul>
+            <li><a href="#why ver api">ทำไมต้องมี Verion API</a></li>
+            <li><a href="#advice API">คำเเนะนำการออกเเบบ API Versions</a></li>
+            <li><a href="#Metadata">Metadata</a></li>
+        </ul>
+        <a href="#Documentatian">Documentatian</a>
+        <a href="#Security">Security Features</a>
+        <a href="#Character">Character</a>
+        <a href="#scal api">scal api</a>
+        <a href="#Conclusion">Conclusion</a>
+    </div>
+
+
+    <div class="content">
+        <h1>หลักเกณฑ์และแนวทางปฏิบัติที่ดีที่สุดสำหรับการออกแบบ RESTful API</h1>
+        <section id="Intro">
+            <h2>Intro</h2>
+            <p>
+                ปัจจุบันการพัฒนา API หรือ Microservice เพิ่มขึ้นอย่างมีนัยสำคัญ 
+                ซึ่งมีส่วนสำคัญในการใช้แลกเปลี่ยนข้อมูล กรณีมีแอปพลิเคชันในหลายรูปแบบ เช่น Web app 
+                หรือ Mobile app และ IoT โดยใช้ Restful API เป็นตัวกลางเชื่อมต่อระหว่างแต่ละอุปกรณ์ 
+                ซึ่งอนุญาตให้แลกเปลี่ยนข้อมูลระหว่าง Server กับ Client โดย Server รับ Requests 
+                จาก Client และส่ง Response ข้อมูลกลับ
+            </p>
+        </section>
+
+        <section id="API">
+            <h2>API</h2>
+            <p>
+                คำว่า API นั้นย่อมาจาก Application Programming Interface ซึ่ง API 
+                จะเป็นตัวกลางที่อนุญาตให้แอปพลิเคชันแลกเปลี่ยนข้อมูลผ่าน Endpoint โดย Client 
+                จะใช้ API ส่งคำร้องขอ (Request) และตอบกลับข้อมูล (Response) 
+                (คล้าย ๆ การสื่อสารระหว่าง 2 อุปกรณ์โดยมี API เป็นตัวกลาง)
+            </p>
+        
+
+            <div class="note-box">
+                <h3>Note: Endpoints คืออะไร?</h3>
+                <p><strong>Endpoint</strong> คือ Term ของ URL Path เป็นเหมือนภาษาพูดที่ใช้เรียก Path ของ API โดยจะเรียก URLs ทั้งหมดว่า API แต่ละ URL จะเรียกว่า Endpoint</p>
+                <ul>
+                    <li><strong>Public endpoints</strong>: Endpoint ที่สามารถเข้าถึงได้แบบสาธารณะ ไม่จำเป็นต้องมีการยืนยันตัวตนก่อนใช้งาน</li>
+                    <li><strong>Authenticated endpoints</strong>: Endpoint ที่จำเป็นต้องมีการยืนยันตัวตนก่อนใช้งาน</li>
+                </ul>
+            </div>
+        </section>
+        
+
+        <section id="REST">
+            <h2>REST</h2>
+            <p>คำว่า REST นั้นย่อมาจาก <a href="https://en.wikipedia.org/wiki/REST" target="_blank" rel="noopener noreferrer">Representational State Transfer</a>
+                ซึ่ง Rest คือคำเรียกในเชิงแบบสถาปัตยกรรมที่ใช้ในการพัฒนาเว็บเซอร์วิส โดยนำเสนอครั้งแรกโดย <a href="https://en.wikipedia.org/wiki/Roy_Fielding" target="_blank" rel="noopener noreferrer">Roy Fielding </a></p>
+        </section>
+        
+
+        <section id="RESTful-API">
+            <h2>RESTful API</h2>
+            <p>RESTful นั้นพัฒนามาจากรากฐานสถาปัตยกรรมรูปแบบของ REST และใช้ HTTP Methods เรียกว่า RESTful web services
+
+                โดยทั่วไป API นั้นช่วยให้การแลกเปลี่ยนข้อมูลนั้นง่ายขึ้นมาก ๆ โดยจะอนุญาตให้นักพัฒนา Integrated ฟังก์ชันบางอย่างจาก API ที่เป็น Third-party Services เพื่อสร้างฟังก์ชันอะไรบางอย่างของตัวเอง 
+                อย่างกรณีเช่น Uber และ Grab ใช้ Google Map API สำหรับการทำระบบนำทาง (Navigation) โดยช่วยให้ลดเวลาพัฒนาลงอย่างมากในการพัฒนาระบบเองจากศูนย์</p>
+                <div style="text-align: center;">
+                    <img src="https://github.com/chaloemphona/image/blob/main/004.png?raw=true" alt="RESTful-API">
+                </div>
+        </section>
+
+
+        <section id="RESTful-API-Design">
+            <h2>RESTful API Design</h2>
+            <p>API นั้นสามารถสร้างได้จากหลากหลายภาษา (Server side script Language Programming) ไม่ว่าจะเป็น PHP Ruby JS Java Python และ Golang เป็นต้น</p>
+        </section>
+
+
+        <section id="disc">
+            <h3>คำศัพท์</h3>
+            <ul>
+                <li>Collections Resource เช่น /api/v1/users สำหรับหลาย items</li>
+                <li>Instance Resource เช่น /api/v1/users/123 สำหรับ item เดียว</li>    
+            </ul>
+            <p>โครงสร้าง API Endpoint อ้างอิงตามด้านล่างนี้ โดย URL โครงสร้างควรเป็นไปตามแบบลำดับชั้น และสามารถคาดการณ์ได้เพื่อให้ทำความเข้าใจและการใช้งานง่าย</p>
+            <div style="text-align: center;">
+                <img src="https://github.com/chaloemphona/image/blob/main/002.png?raw=true" alt="disc">
+            </div>
+        </section>
+
+        <section id="desc">
+            <h3>คำอธิบาย</h3>
+            <p><strong>Scheme</strong> เป็นตัวที่ระบุ Protocol ซึ่งโดยปกติจะเป็น http หรือ https (มี s คือ secure หรือมีระบบความปลอดภัยกว่า)</p>
+            <p><strong>Base</strong> หรือ ชื่อโดเมน หรือ DNS หรือบางคนเรียก ชื่อโฮสต์ (Host Name) เป็นองค์ประกอบสำคัญของ URL ที่ช่วยให้ผู้ใช้สามารถเข้าถึงเว็บไซต์ที่ต้องการได้อย่างถูกต้อง ชื่อโดเมนของแต่ละเว็บไซต์จะแตกต่างกันไปตามที่ผู้พัฒนาเว็บกำหนดแต่ส่วนท้ายของชื่อจะมีการกำกับตามประเภทของเว็บไซต์นั้น ๆ</p>
+            <p><strong>Version</strong> หรือ API Versions คือส่วนที่บอกว่า APIs มีรุ่นและการเปลี่ยนแปลงอย่างไร และปัจจุบันเป็นรุ่นอะไร — API Versions สำคัญอย่างไรนั้น คำตอบนั้นคือ เมื่อทำการเผยแพร่ API เป็น Public แล้ว ตัวAPI จะต้องไม่เกิดการ Breaking (อยู่ดีๆ ใช้งานไม่ได้) ของ API โดยไม่แจ้งผู้ใช้ให้ทราบล่วงหน้า ดังนั้น API Versioning จะช่วยให้ป้องกันการเกิด Request ที่ไม่มีอยู่</p>
+            <p><strong>Path</strong> คือเส้นทางที่นำไปสู่ไฟล์หรือตำแหน่งต่างๆ ของข้อมูลบนเว็บไซต์ โดย Path จะอยู่ด้านหลังของชื่อโดเมนเสมอและคั่นเครื่องด้วยเครื่องหมายทับ (/)</p>
+            <p><strong>Query Parameter</strong> หรือ Query String คือ ค่าหรือตัวแปรเพิ่มเติมเพื่อการเข้าถึงข้อมูลที่ลึกหรือเฉพาะมากขึ้นบนเว็บไซต์ เปรียบเสมือนเป็นการกรองข้อมูลให้แยกย่อยลงไปอีกตามที่ผู้ใช้ต้องการ มักปรากฎเครื่องหมาย “?” ตามด้วยค่าพารามิเตอร์เช่นสีหรือขนาดของสินค้าบางอย่าง ซึ่งหากมีพารามิเตอร์มากกว่า 1 ค่า URL จะแสดงค่าเป็นคู่โดยใช้เครื่องหมาย “&” คั่นระหว่างค่า และแบ่งคู่ด้วยเครื่องหมาย “=”</p>
+        </section>
+
+
+        <section id="GOOD-Design">
+            <h3>รูปแบบของ Resource Names ที่ดี</h3>
+            <p>- ควรเป็นคำนาม อย่าใช้คำกริยาในการอธิบาย</p>
+            <p>- ชื่อ Resource ควรเป็นเอกพจน์สำหรับแบบ Instance Resource</p>
+            <p>- ชื่อ Resource ควรเป็นพหูพจน์สำหรับแบบ Collections Resource</p>
+            <p>- ชื่อ Resource ควรตั้งเป็นตัวพิมพ์เล็ก (Lower-case) และเครื่องหมาย - (Hyphen) สำหรับคั่นคำ</p>
+
+            <h3>รูปแบบของชื่อ Query Parameters ที่ดี</h3>
+            <p>- ตัวอักษรใน Query string ควรใช้ _ (Underscore) สำหรับคั่นคำ</p>
+            <p>- Query parameters ควรเป็นตัวพิมพ์เล็กทั้งหมด (Lower-case)</p>
+            <p>- Query parameters ใช้เท่าที่จำเป็น เช่นการ Filters และ Sorting</p>
+            <p>- Query parameters พึงระวังไว้เสมอว่าไม่ควรใช้ตัวอักษรที่เป็นข้อมูล Sensitive</p>
+            
+            <h3>รูปแบบของชื่อ Fields หรือ Attribute Names ที่ดี</h3>
+            <p>- รูปแบบของชื่อควรสอดคล้องกับรูปแบบของข้อมูล JSON</p>
+            <p>- ควรเป็นตัวพิมพ์เล็กทั้งหมด (Lower-case) ใช้ _ (Underscore) สำหรับคั่นคำ</p>
+            <p>- ไม่ควรใช้ Prefix อย่างเช่น is_ หรือ has_ สำหรับ keys ประเภทแบบบูลีน</p>
+            <p>- Fields ที่เป็นรูปแบบ Arrays ควรใช้ชื่อที่เป็นคำนามพหูพจน์ ตัวอย่าง</p>
+            <ul>
+                <li>authenticators-contains หรือ authenticators</li>
+                <li>products-contains หรือ products</li>
+            </ul>
+
+
+            <p><strong>ตัวอย่างโค้ดที่ดี (ยังไม่ได้ปรับ)</strong></p>
+            <p><code>GET</code> <a href="http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020</a></p>
+            <p><strong>ตัวอย่างโค้ดที่เเย่ (ยังไม่ได้ปรับ)</strong></p>
+            <p><code>GET</code> <a href="http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020</a></p>
+        </section>
+
+
+
+        <section id="CRUD">
+            <h2>ตัวอย่างการออกแบบ CRUD API ที่ดี</h2>
+            <p>ทีนี้มาดูตัวอย่างรายละเอียดสำหรับออกแบบ Article Resource API ที่ดีที่ควรจะเป็นโดยตัวอย่างจะเป็นแบบ <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete" target="_blank" rel="noopener noreferrer">CRUD</a> (Create-Read-Update-Delete)</p>
+        </section>
+            
+
+        <section id="READ">
+            <h3>เมื่อต้องการขอข้อมูลต้องใช้ (READ)</h3>
+            <h4>การออกเเบบที่ควรปรับปรุง</h4>
+            <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                    <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                    <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">GET</td>
+                    <td style="padding: 8px;">/GetUser</td>
+                    <td style="padding: 8px;">สำหรับขอข้อมูลชื่อทั้งหมด</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">GET</td>
+                    <td style="padding: 8px;">/GetUser/{id}</td>
+                    <td style="padding: 8px;">สำหรับขอข้อมูลชื่อบางรายการ</td>
+                  </tr>
+                </tbody>
+              </table>    
+              <p><ul><li>อย่าใช้คำกริยาหรือพฤติกรรมเพื่ออธิบาย APIs</li></ul></p> 
+
+            <h4>การออกเเบบที่ควรเป็น</h4>
+            <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                    <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                    <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">GET</td>
+                    <td style="padding: 8px;">/User</td>
+                    <td style="padding: 8px;">สำหรับขอข้อมูลชื่อทั้งหมด</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">GET</td>
+                    <td style="padding: 8px;">/User/{id}</td>
+                    <td style="padding: 8px;">สำหรับขอข้อมูลชื่อบางรายการ</td>
+                  </tr>
+                </tbody>
+              </table>   
+              <p><ul>
+                <li>HTTP method ควรใช้ GET</li>
+                <li>ใช้ Plural หรือ Singular nouns(จะเลือกใช้อะไรก็ตาม ก็ควรให้มันสอดคล้องกับ APIs ทั้งหมดที่มี)</li>
+              </ul></p> 
+              </section>
+
+
+            <section id="CREATE">
+            <h3>เมื่อต้องการเพิ่มข้อมูลชื่อต้องใช้ (CREATE)</h3>
+            <h4>การออกเเบบที่ควรปรับปรุง</h4>
+            <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                    <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                    <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">POST</td>
+                    <td style="padding: 8px;">/CreateUser</td>
+                    <td style="padding: 8px;">สำหรับสร้างข้อมูลชื่อ</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">GET</td>
+                    <td style="padding: 8px;">/CreateUser</td>
+                    <td style="padding: 8px;">สำหรับสร้างข้อมูลชื่อ</td>
+                  </tr>
+                </tbody>
+              </table>    
+              <p><ul><li>URL ของ Endpoint ควรประกอบไปด้วย HTTP method ทีอธิบายความสามารถของ APIs นั้น</li></ul></p> 
+
+            <h4>การออกเเบบที่ควรเป็น</h4>
+            <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                    <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                    <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">POST</td>
+                    <td style="padding: 8px;">/User</td>
+                    <td style="padding: 8px;">สำหรับขอข้อมูลชื่อ</td>
+                  </tr>
+                </tbody>
+              </table>   
+
+              <p><ul>
+                <li>HTTP method ควรใช้ POST</li>
+                <li>ใช้ Plural หรือ Singular nouns(จะเลือกใช้อะไรก็ตาม ก็ควรให้มันสอดคล้องกับ APIs ทั้งหมดที่มี)</li>
+              </ul></p>
+            </section> 
+
+
+
+            <section id="UPDATE">
+              <h3>เมื่อต้องการอัปเดตข้อมูลชื่อต้องใช้ (UPDATE)</h3>
+              <h4>การออกเเบบที่ควรปรับปรุง</h4>
+              <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                  <thead style="background-color: #f2f2f2;">
+                    <tr>
+                        <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                        <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                        <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 8px;">PUT</td>
+                      <td style="padding: 8px;">/UpdateUser/12</td>
+                      <td style="padding: 8px;">สำหรับอัปเดตข้อมูลชื่อบางรายการ</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 8px;">POST</td>
+                      <td style="padding: 8px;">/UpdateUser/12</td>
+                      <td style="padding: 8px;">สำหรับอัปเดตข้อมูลชื่อบางรายการ</td>
+                    </tr>
+                  </tbody>
+                </table>    
+  
+              <h4>การออกเเบบที่ควรเป็น</h4>
+              <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                  <thead style="background-color: #f2f2f2;">
+                    <tr>
+                        <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                        <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                        <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 8px;">PETCH</td>
+                      <td style="padding: 8px;">/User/12</td>
+                      <td style="padding: 8px;">สำหรับอัปเดตข้อมูลชื่อบางรายการ</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 8px;">PUT</td>
+                      <td style="padding: 8px;">/User/12</td>
+                      <td style="padding: 8px;">สำหรับอัปเดตข้อมูลชื่อบางรายการ</td>
+                    </tr>
+                  </tbody>
+                </table>   
+                <p><ul>
+                  <li>HTTP method ควรใช้ PETCH หรือ PUT</a></li>
+                  <li>ใช้ Plural หรือ Singular nouns(จะเลือกใช้อะไรก็ตาม ก็ควรให้มันสอดคล้องกับ APIs ทั้งหมดที่มี)</li>
+                </ul></p> 
+            </section>
+
+
+
+            <section id="DELETE">
+                <h3>เมื่อต้องการลบข้อมูลชื่อต้องใช้ (DELETE)</h3>
+                <h4>การออกเเบบที่ควรปรับปรุง</h4>
+                <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                    <thead style="background-color: #f2f2f2;">
+                      <tr>
+                        <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                        <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                        <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="padding: 8px;">PUT</td>
+                        <td style="padding: 8px;">/DeleteUser/12</td>
+                        <td style="padding: 8px;">สำหรับลบข้อมูลชื่อบางรายการ</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px;">POST</td>
+                        <td style="padding: 8px;">/12/DeleteUser</td>
+                        <td style="padding: 8px;">สำหรับลบข้อมูลชื่อบางรายการ</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px;">PETCH</td>
+                        <td style="padding: 8px;">/Delete_User/12</td>
+                        <td style="padding: 8px;">สำหรับลบข้อมูลชื่อบางรายการ</td>
+                      </tr>
+                    </tbody>
+                  </table>    
+    
+                <h4>การออกเเบบที่ควรเป็น</h4>
+                <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                    <thead style="background-color: #f2f2f2;">
+                      <tr>
+                        <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                        <th style="width: 20%; padding: 8px; text-align: left;">URI</th>
+                        <th style="width: 30%; padding: 8px; text-align: left;">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="padding: 8px;">DELETE</td>
+                        <td style="padding: 8px;">/User/12</td>
+                        <td style="padding: 8px;">สำหรับลบข้อมูลชื่อบางรายการ</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px;">DELETE</td>
+                        <td style="padding: 8px;">/User</td>
+                        <td style="padding: 8px;">สำหรับลบข้อมูลชื่อบางรายการ</td>
+                      </tr>
+                    </tbody>
+                  </table>   
+                  <p><ul>
+                    <li>HTTP method ควรใช้ DELETE</li>
+                    <li>ใช้ Plural หรือ Singular nouns(จะเลือกใช้อะไรก็ตาม ก็ควรให้มันสอดคล้องกับ APIs ทั้งหมดที่มี)</li>
+                  </ul></p> 
+                </section>
+
+
+
+                <section id="ROUTES">
+                  <h3>สรุป Routes Resource</h3>
+                  <h4>การออกเเบบที่ควรปรับปรุง</h4>
+                  <table border="1" style="width:70%; border-collapse: collapse; table-layout: fixed;">
+                      <thead style="background-color: #f2f2f2;">
+                        <tr>
+                          <th style="width: 15%; padding: 8px; text-align: left;">Method</th>
+                          <th style="width: 15%; padding: 8px; text-align: left;">URI</th>
+                          <th style="width: 15%; padding: 8px; text-align: left;">Function</th>
+                          <th style="width: 15%; padding: 8px; text-align: left;">Rute Name</th>
+                          <th style="width: 25%; padding: 8px; text-align: left;">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding: 8px;">GET</td>
+                          <td style="padding: 8px;">/User</td>
+                          <td style="padding: 8px;">index()</td>
+                          <td style="padding: 8px;">User.index</td>
+                          <td style="padding: 8px;">All User</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;">POST</td>
+                            <td style="padding: 8px;">/User</td>
+                            <td style="padding: 8px;">store(req)</td>
+                            <td style="padding: 8px;">User.store</td>
+                            <td style="padding: 8px;">Create User</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 8px;">GET</td>
+                            <td style="padding: 8px;">/User/[id]</td>
+                            <td style="padding: 8px;">show(id)</td>
+                            <td style="padding: 8px;">User.show</td>
+                            <td style="padding: 8px;">Show User by ID</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 8px;">PUT/PETCH</td>
+                            <td style="padding: 8px;">/User/[id]</td>
+                            <td style="padding: 8px;">Update(id)</td>
+                            <td style="padding: 8px;">User.update</td>
+                            <td style="padding: 8px;">Edit/Replace User</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 8px;">DELETE</td>
+                            <td style="padding: 8px;">/User/[id]</td>
+                            <td style="padding: 8px;">Remove(id)</td>
+                            <td style="padding: 8px;">User.remove</td>
+                            <td style="padding: 8px;">Remove User</td>
+                          </tr>
+                      </tbody>
+                    </table>  
+                    </section>  
+
+
+        <section id="HTTP methods">
+            <h2>HTTP methods</h2>
+            <p>HTTP methods คือ กริยา หรือบางทีเรียก HTTP Verbs โดยเป็นการดำเนินการบนของมาตรฐาน HTTP Request ดังนี้</p>
+            <table border="1" style="width:70%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 20%; padding: 8px; text-align: left;">HTTO Method</th>
+                    <th style="width: 50%; padding: 8px; text-align: left;">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">GET</td>
+                    <td style="padding: 8px;">สำหรับการร้องขอ Resource</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">POST</td>
+                    <td style="padding: 8px;">สำหรับเพิ่ม Resource ใหม่ หรือ สำหรับสั่งเพื่อการดำเนินการบางอย่าง เช่น POST ส่งข้อความ</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">PUT</td>
+                    <td style="padding: 8px;">สำหรับแก้ไขข้อมูลใน Resource (ควรใช้เฉพาะกรณีต้องการ Replace ทุก Fields เท่านั้น)</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">PETCH</td>
+                    <td style="padding: 8px;">สำหรับแก้ไขข้อมูลใน Resource (ควรใช้แก้ไขข้อมูลแค่บาง Fields เท่านั้น)</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">DELETE</td>
+                    <td style="padding: 8px;">สำหรับลบข้อมูลใน Resource</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">HEAD</td>
+                    <td style="padding: 8px;">สำหรับร้องขอ metadata เกี่ยวกับ Headers the request การร้องขอการตอบรับจาก Resource จะคล้ายกับ GET แต่จะไม่มีส่วนเนื้อหา (Payload) ตอบกลับ คำสั่งนี้ใช้ประโยชน์ในการตรวจสอบข้อมูลส่วนหัว โดยไม่จำเป็นต้องส่งเนื้อหาเต็มมาทั้งหมด</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">OPTIONS</td>
+                    <td style="padding: 8px;">สำหรับร้องขอเพื่อเรียกดู HTTP method ที่สามารถใช้งานได้ จากการกำหนด CORS (cross-origin resource sharing)</td>
+                  </tr>
+                </tbody>
+              </table>    
+        </section>
+
+
+        <section id="HTTP Status Code">
+            <h2>HTTP response status code</h2>
+            <p>คำอธิบายเเละความหมายของ <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes" target="_blank" rel="noopener noreferrer">HTTP/1.1:Statatus Code Definitiond</a></p>
+
+            <ul>
+                <li>1xx informational response - server เเจ้งให้รู้ว่าคำร้องขอสามารถดำเนินงานต่อได้</li>
+                <li>2xx successful - เมื่อ Request ได้รับสำเร็จ เข้าใจ เเะยอมรับเเล้ว</li>
+                <li>3xx redirection - เส้นทางมีการเปลี่ยนเเปลง เเละต้องได้รับ Action อื่นๆ เพื่อให้ดำเนินการสำเร็จ</li>
+                <li>4xx client error - เมื่อ Request มีไวยากรณ์ที่ไม่ถูกต้อง หรือไม่สามารถทำให้สมบูรณ์ได้</li>
+                <li>5xx server error - เมื่อ server ไม่สามารถตอบสนองคำขอที่๔ึกต้องได้</li>
+            </ul>
+
+
+            <table border="1" style="width: 50%; border-collapse: collapse; table-layout: fixed">
+                <thead style="background-color: #f2f2f2;">
+                    <tr">
+                        <td style="width: 15%; padding: 8px; text-align: center;"><strong>Status code</strong></td>
+                        <td style="width: 15%; padding: 8px; text-align: center;"><strong>Meaning</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr style="padding: 8px; background-color: #faebeb;">
+                <td style="padding: 8px;"><strong>1xx Informational</strong></td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">100</td>
+                <td style="padding: 8px;">Continue</td>
+                </tr>
+                <tr >
+                <td style="padding: 8px;">101</td>
+                <td style="padding: 8px;">Switching protocols</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">102</td>
+                <td style="padding: 8px;">Processing</td>
+                </tr>
+                <tr >
+                <td style="padding: 8px;">103</td>
+                <td style="padding: 8px;">Early Hints</td>
+                </tr>
+                <tr >
+                <td style="padding: 8px;"> </td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="height: 18px; background-color: #faebeb;">
+                <td style="padding: 8px;"><strong>2xx Succesful</strong></td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">200</td>
+                <td style="padding: 8px;">OK</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">201</td>
+                <td style="padding: 8px;">Created</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">202</td>
+                <td style="padding: 8px;">Accepted</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">203 </td>
+                <td style="padding: 8px;">Non-Authoritative Information</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">204</td>
+                <td style="padding: 8px;">No Content</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">205</td>
+                <td style="padding: 8px;">Reset Content</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">206</td>
+                <td style="padding: 8px;">Partial Content</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">207</td>
+                <td style="padding: 8px;">Multi-Status</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">208</td>
+                <td style="padding: 8px;">Already Reported</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">226</td>
+                <td style="padding: 8px;">IM Used</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;"> </td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="height: 18px; background-color: #faebeb;">
+                <td style="padding: 8px;"><strong>3xx Redirection</strong></td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">300</td>
+                <td style="padding: 8px;">Multiple Choices</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">301</td>
+                <td style="padding: 8px;">Moved Permanently</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">302</td>
+                <td style="padding: 8px;">Found (Previously "Moved Temporarily")</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">303</td>
+                <td style="padding: 8px;">See Other</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">304</td>
+                <td style="padding: 8px;">Not Modified</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">305</td>
+                <td style="padding: 8px;">Use Proxy</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">306</td>
+                <td style="padding: 8px;">Switch Proxy</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">307</td>
+                <td style="padding: 8px;">Temporary Redirect</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">308</td>
+                <td style="padding: 8px;">Permanent Redirect</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;"> </td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="height: 18px; background-color: #faebeb;">
+                <td style="padding: 8px;"><strong>4xx Client Error</strong></td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">400</td>
+                <td style="padding: 8px;">Bad Request</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">401</td>
+                <td style="padding: 8px;">Unauthorized</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">402</td>
+                <td style="padding: 8px;">Payment Required</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">403</td>
+                <td style="padding: 8px;">Forbidden</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">404</td>
+                <td style="padding: 8px;">Not Found</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">405</td>
+                <td style="padding: 8px;">Method Not Allowed</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">406</td>
+                <td style="padding: 8px;">Not Acceptable</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">407</td>
+                <td style="padding: 8px;">Proxy Authentication Required</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">408</td>
+                <td style="padding: 8px;">Request Timeout</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">409</td>
+                <td style="padding: 8px;">Conflict</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">410</td>
+                <td style="padding: 8px;">Gone</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">411</td>
+                <td style="padding: 8px;">Length Required</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">412</td>
+                <td style="padding: 8px;">Precondition Failed</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">413</td>
+                <td style="padding: 8px;">Payload Too Large</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">414</td>
+                <td style="padding: 8px;">URI Too Long</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">415</td>
+                <td style="padding: 8px;">Unsupported Media Type</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">416</td>
+                <td style="padding: 8px;">Range Not Satisfiable</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">417</td>
+                <td style="padding: 8px;">Expectation Failed</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">418</td>
+                <td style="padding: 8px;">I'm a Teapot</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">421</td>
+                <td style="padding: 8px;">Misdirected Request</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">422</td>
+                <td style="padding: 8px;">Unprocessable Entity</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">423</td>
+                <td style="padding: 8px;">Locked</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">424</td>
+                <td style="padding: 8px;">Failed Dependency</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">425</td>
+                <td style="padding: 8px;">Too Early</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">426</td>
+                <td style="padding: 8px;">Upgrade Required</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">428</td>
+                <td style="padding: 8px;">Precondition Required</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">429</td>
+                <td style="padding: 8px;">Too Many Requests</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">431</td>
+                <td style="padding: 8px;">Request Header Fields Too Large</td>
+                </tr>
+                <tr style="height: 18px;">
+                <td style="padding: 8px;">451</td>
+                <td style="padding: 8px;">Unavailable For Legal Reasons</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;"> </td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr style="padding: 8px; background-color: #faebeb;">
+                <td style="padding: 8px;"><strong>5xx Server Error</strong></td>
+                <td style="padding: 8px;"> </td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">500</td>
+                <td style="padding: 8px;">Internal Server Error</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">501</td>
+                <td style="padding: 8px;">Not Implemented</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">502</td>
+                <td style="padding: 8px;">Bad Gateway</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">503</td>
+                <td style="padding: 8px;">Service Unavailable</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">504</td>
+                <td style="padding: 8px;">Gateway Timeout</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">505</td>
+                <td style="padding: 8px;">HTTP Version Not Supported</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">506</td>
+                <td style="padding: 8px;">Variant Also Negotiates</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">507</td>
+                <td style="padding: 8px;">Insufficient Storage</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">508</td>
+                <td style="padding: 8px;">Loop Detected</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">510</td>
+                <td style="padding: 8px;">Not Extended</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">511</td>
+                <td style="padding: 8px;">Network Authentication Required</td>
+                </tr>
+                </tbody>
+                </table>
+        </section>
+
+
+        <section id="Response Data Format">
+            <h2>Response Data Format</h2>
+            <h4 id="Result Messages">Result Messages</h4>
+            <P>สำหรับการตอบกลับของข้อมูลนั้นจะมีรูปเเบบดังนี้</P>
+            <p><code>GET /group-members</code> จะ Return ลิสของ Objects ในรูปเเบบของ <code>Data</code></p>
+            <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 16px; white-space: pre-wrap; width: 400px; height: 110px; overflow: auto;">
+{
+    "data": [
+        { "id": 1, "name": "Larry" },
+        { "id": 2, "name": "Peter" }
+    ]
+}</pre></p>
+            <p><code>GET /group-members/1</code> จะ Return แบบ Single Object ในรูปแบบของ <code>Data</code></p>
+            <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 16px; white-space: pre-wrap; width: 400px; height: 60px; overflow: auto;">
+{
+    "data": { "id": 1, "name": "Larry" }
+}</pre></p>
+            <p>ถ้าหากมีการข้ามของข้อมูลก็ควรมีการกำหนดค่าเริ่มต้น (เช่น <code>offset=0</code> และ <code>limit=100</code> ) และไม่ควรส่งออกข้อมูลทั้งหมด ถ้าข้อมูลมีจำนวนเยอะควรจะมีการจำกัด <code>Limit</code> เป็นค่าเริ่มต้น (Pagination)</p>
+            <p><code>GET /User  # returns the User 0 to 100</code></p>
+            <p>เมื่อมีการกำหนด offset เเละ limit</p>
+            <p>Request <code>GET /User?offset=20&limit=10</code></p>
+            <p>Response <pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 16px; white-space: pre-wrap; width: 650px; height: 260px; overflow: auto;">
+{
+    "pagination": {
+        "offset": 20,
+        "limit": 10,
+        "total": 3465,
+    },
+    "data": [
+        //...
+    ],
+    "links": {
+        "next": "https://api.abc.com/v1/User?offset=30&limit=10",
+        "prev": "https://api.abc.com/v1/User?offset=10&limit=10"
+    }
+}</pre></p>
+            <p>ถ้าเป็นไปได้ควรมี Links ที่สามารถไปหน้าถัดไปเเละหน้าก่อนหน้า เมื่อ URL มีการกำหนด offset เเละ limit</p>
+
+            <h4 id="Error Messages">Error Messages</h4>
+            <p>เป็นส่วนที่เกี่ยวกับ Errors เมื่อมีเหตุการณ์บางอย่างที่เกิดขึ้นไม่ถูกต้องโดยในส่วนของ Body ของการตอบกลับ HTTP มีตัวอย่างนี้</p>
+            <p>Request <code>GET /User?state=super</code></p>
+            <p>Response <pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 16px; white-space: pre-wrap; width: 650px; height: 260px; overflow: auto;">
+// 400 Bad Request
+{
+    "errors": [
+        {
+            "status": 400,
+            "code": "INVALID_STATE",
+            "message": "Invalid state. Valid values are 'internal' or 'external'",
+            "links": {
+                "about": "https://api.abc.com/v1/rest/errorcode/352"
+            }
+        }
+    ]
+}</pre></p>
+        </section>
+
+
+        <section id="FSP">
+            <h2>Filtering, Sorting, Pagination</h2>
+        </section>
+
+
+
+        <section id="Filtering">
+            <h4>Filtering</h4>
+            <p>Filtering คือความสามารคในการ Filter เเละ Sort ของ Collections ใน API เพื่อที่จะอนุญาตให้ควบคุมการเเสดงผลข้อมูลใน API ให้มีความยืดหยุ่น</p>
+            <ul>
+                <li>การกำหนดจำนวนการเเสดงผลด้วยวิธีต่างๆ (เเต่วิธีนี้ไม่เเนะนำ) โดยเป็นส่วนหนึ่งของ API URL</li>
+                <li>Filter paramenters ไม่เป็นส่วนหนึ่งของการกำหนด Resource ให้ใช้ Query parameters แทนเพื่อ Filter และ Sort ตามความต้องการ</li>
+            </ul>
+            <p>ข้างล่างนี้จะเป็นความแตกต่างของเทคนิคที่ใช้กับ Filter และ Sort:</p>
+            <h4>Output Selection</h4>
+            <p>ผู้ใช้ API สามารถระบุ Attributes ที่เขาต้องการสำหรับการตอบกลับในส่วนของ Response payload ด้วยการระบุ Attributes ใน Query parameters</p>
+            <p>ตัวอย่างการตอบกลับสำหรับ <code>first_name</code> และ <code>last_name</code> เท่านั้น</p>
+            <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 16px; white-space: pre-wrap; width: 300px; height: 20px; overflow: auto;">?attributes=first_name,last_name</pre></p>
+            <h4>Simple Filtering</h4>
+            <p>Attributes สามารถใช้ Filter กับ collection ของ resources</p>
+            <p>ตัวอย่างการ Filter ชื่อ</p>
+            <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 16px; white-space: pre-wrap; width: 300px; height: 20px; overflow: auto;">?last_name=Johnson</pre></p>
+            <p>จะ Filter ออกจาก Collection ของ resources ด้วย attribute <code>last_name</code> ที่เท่ากับ <code>Johnson</code> </p> <code></code>
+            <p>ใช้สัญลักษณ์เท่ากับ <code>=</code> สำหรับเทคนิคที่ใช้เปรียบเทียบข้อมูลที่เท่ากัน และสำหรับการดำเนินการอื่น ๆ ดูในหัวข้อ Advanced Filtering</p>
+            <p>ตัวอย่างการ Filter วันเกิด</p>
+            <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 16px; white-space: pre-wrap; width: 400px; height: 20px; overflow: auto;">?last_name=Johnson&date_of_birth=1999-12-31</pre></p>
+            <p>จะ Filter ข้อมูลออกจาก Collection ของ resources ด้วย attribute <code>last_name</code>  ที่เท่ากับ <code>Johnson</code> และ <code>date_of_birth</code> เท่ากับ <code>1999-12-31</code></p> 
+            <h4>Advaned Filtering</h4>
+            <p>มีบางสถานการณ์ที่การ Filter อย่างง่ายนั้นไม่ตรงกับความต้องการและจำเป็นต้องมีแนวทางอื่นที่ครอบคลุมมากขึ้น อย่างเช่นใช้ตัวกรองสัญลักษณ์ดังต่อไปนี้เพื่อกำหนดตรรกะการกรองที่ซับซ้อนมากขึ้น</p>
+            <p>สามารถกำหนดแอตทริบิวต์หลายรายการที่มีตัวดำเนินการและเงื่อนไขต่างกันได้ในพารามิเตอร์ตัวกรองการค้นหา</p>
+            <p>รองรับตัวดำเนินการต่อไปนี้ : </p>
+            <p>1. >= มากกว่าหรือเท่ากับ</p>
+            <p>2. > มากกว่า</p>
+            <p>3. < น้อยกว่า</p>
+            <p>4. <= น้อยกว่าหรือเท่ากับ</p>
+            <p>5. = เท่ากับ</p>
+            <p>6. != ไม่เท่ากับ</p>
+            <p>หรือไม่ว่าจะเป็นเงื่อนไข AND , OR ก็กำหนดได้</p>
+            <p>ตัวอย่างการใช้ AND , OR :</p>
+            <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 15px; white-space: pre-wrap; width: 1100px; height: 20px; ">?filters=creation_date >= 2001-09-20T13:00:00 and creation_date <= 2001-09-21T13:00:00 and first_name like 'Fred' and post_code=3000</pre></p>
+            <p>จะแสดง collection ของ resources เมื่อ <code>creation_date</code>  อยู่ระหว่าง <code>2001-09-20 1pm </code> และ <code>2001-09-21 1pm</code>  และ <code>first-name</code>คือ <code>Fred</code> และ <code>post_code</code> คือ <code>3000</code></p>
+            <h4>Match Case Sensitivity</h4>
+            <ul>
+                <li>ตามคำแนะนำทั่วไปการ Return ข้อมูลที่คล้ายกันจะดีกว่าการไม่ส่งคืนรายการที่ไม่ตรงกันเลย</li>
+                <li>ค่าที่กำหนดของการกรองควรพิจารณาจะไม่คำนึงถึงขนาดตัวพิมพ์</li>
+                <li>ไม่ว่าคุณจจะไม่คำนึงถึงขนาดตัวพิมพ์ แต่ก็ควรจัดทำเป็นเอกสารไว้อย่างชัดเจน</li>
+            </ul>
+            </section>
+
+            
+            <section id="Sorting">
+            <h4>Sorting</h4>
+            <p>การที่ข้อมูลสามารถกำหนดตามลำดับการเรียงที่เฉพาะเจาะจงได้มักเป็นความต้องการจากแอปพลิเคชันไคลเอนต์ ดังนั้นจึงเป็นเรื่องสำคัญที่จะต้องให้ความยืดหยุ่นแก่ผู้ใช้ในการดึงข้อมูลตามลำดับที่พวกเขาต้องการ</p>
+            <p>พารามิเตอร์สองตัวที่ใช้ในการเรียงลำดับมีดังนี้</p>
+            <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 15%; padding: 8px; text-align: left;">Query Parameter</th>
+                    <th style="width: 35%; padding: 8px; text-align: left;">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">sort</td>
+                    <td style="padding: 8px;">ในการจัดเรียงข้อมูลเช่น asc หรือ desc</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">sort_fields</td>
+                    <td style="padding: 8px;">พารามิเตอร์ที่ใช้จัดเรียง id หรือ name</td>
+                  </tr>
+                </tbody>
+              </table>  
+              
+              <p><code>sort_fields</code> เป็นพหูพจน์เนื่องจากมีทั้งตัวเลือกต่อไปนี้</p>
+              <ul>
+                <li>?sort=asc&sort_fields=name,last_modified</li>
+                <li>?sort=desc&sort_fields=name&sort_fields=last_modified</li>
+              </ul>
+              <p>คำค้นหาทั้งสองนี้ควรเรียงลำดับตามชื่อจากนั้นตามวันที่เเก้ไขล่าสุด</p>
+            </section>
+
+
+            <section id="Pagination">
+              <h4>Pagination</h4>
+              <p>ระบบเลขหน้าำตามคำเเนะนำดังนี้</p>
+              <p>1. ส่งคำขอในเวลาที่เหมาะสม (เช่น request < 2 วินาที)</p>
+              <p>2. ตรวจสอบให้เเน่ใจว่าปริมาณข้อมูลที่ตอบกลับยังคงอยู่ใส่วนที่จัดการได้ (เช่น 500kb)</p>
+              <p>3. ตรวจสอบปริมาณข้อมูลในการตอบกลับสามารถจัดการได้ง่ายเพื่อรองรับประสบการณ์ของผู้ใช่ที่ดี (UX)</p>
+              
+        
+
+              <h4>Parameters</h4>
+              <p>เมื่อใช้การเเบ่งหน้าให้ใช้พารามิเตอร์ต่อไปนี้ :</p>
+              <table border="1" style="width:50%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 15%; padding: 8px; text-align: left;">Query Parameter</th>
+                    <th style="width: 35%; padding: 8px; text-align: left;">Description</th>
+                    <th style="width: 35%; padding: 8px; text-align: left;">Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">page</td>
+                    <td style="padding: 8px;">หน้าเพจที่ผู้ใช้ต้องการ</td>
+                    <td style="padding: 8px;">page=1 (กำหนเค่าเริ่มต้น 1)</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">limit</td>
+                    <td style="padding: 8px;">จำนวนผลลัพธ์ต่อหน้าที่ผู้ใช่ต้องการ</td>
+                    <td style="padding: 8px;">limit=10 (กำหนเค่าเริ่มต้น 10)</td>
+                  </tr>
+                </tbody>
+              </table> 
+
+              <p>ตัวอย่างโครงสร้าง URL ดังนี้ :</p>
+              <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 15px; white-space: pre-wrap; width: 300px; height: 70px; ">
+Page 1: /customers?page=1&limit=10
+Page 2: /customers?page=2&limit=10
+    ...
+Page 50: /customers?page=50&limit=10</pre></p>
+                <p>โครงสร้างนี้เข้าใจง่ายเนื่องจากมีความเรียบง่าย และสามารถรวมไว้ใน UI เช่น ลิงก์ต่าง ๆ ได้โดยตรง</p>
+                <h4>Common Terms</h4>
+                <p>พารามิเตอร์ต่อไปนี้เป็นพารามิเตอร์ทั่วไปใน REST APIs แต่ห้ามใช้ในข้อกำหนดดังนี้</p>
+                <p><code>offset</code> และ <code>limit</code> การใช้สองสิ่งนี้เป็นเรื่องปกติในฐานข้อมูล SQL และเป็นตัวเลือกที่ดีเมื่อคุณต้องการให้ผลลัพธ์ออกมาอย่างต้องการ อย่างไรก็ตามการใช้งานพารามิเตอร์ <code>offset</code> อาจเป็นเรื่องยากดังนั้นจึงแนะนำให้ใช้ <code>page</code> แทน</p>
+                <p><code>since</code> และ <code>limit</code> ดึงข้อมูลทุกอย่าง "ตั้งแต่" โดยสิ่งเหล่านี้มีประโยชน์เมื่อต้องการให้ไคลเอนต์สามารถ "ซิงค์" กับข้อมูลได้อย่างมีประสิทธิภาพ อย่างไรก็ตามโดยทั่วไปแล้วต้องมีการกำหนดการเรียงลำดับเริ่มต้นไว้ให้ชุดผลลัพธ์เพื่อให้มีความสำคัญอย่างมีนัย</p>
+
+                <h4>Metadata</h4>
+                <p>เมื่อมีการแบ่งหน้าให้กำหนดสิ่งนี้ไว้ แนะนำอย่างยิ่ง สำหรับ API เพื่อที่จะให้คำแนะนำผู้ใช้ในเนื้อหาการตอบกลับ (response body) ว่าพวกเขาอยู่ในหน้าใด ถ้าหากไม่กำหนดไว้ผู้ใช้จะต้องกำหนดให้ตรวจสอบคำขอซึ่งมักจะต้องมีโค้ดอย่างไม่จำเป็นเพื่อตรวจสอบพารามิเตอร์การสืบค้น</p>
+                <P>ตัวอย่าง</P>
+                <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 15px; white-space: pre-wrap; width: 500px; height: 300px; ">
+{
+    "total_records" : 2340,
+    "_meta": {
+        "processing_time" : 120,
+        "page": 4,
+        "limit": 20
+    },
+    "_links" : {
+        "_self": "/namespace/v1/User?page=2&limit=1",
+        "_prev": "/namespace/v1/User?page=1&limit=1",
+        "_next": "/namespace/v1/User?page=3&limit=1"
+    },
+    "_embedded" : {
+        "count" : 20,
+        "data" : [//...actual data here...]
+    }
+}</pre></p>
+                </section>
+
+
+
+                <section id="API Versioning">
+                <h2>API Versioning</h2>
+                <p>API Versions คือส่วนที่บอกว่า APIs มีรุ่นและการเปลี่ยนแปลงอย่างไร และปัจจุบันเป็นรุ่นอะไร</p></section>
+                <h4 id="why ver api">ทำไมต้องมี API Versions</h4>
+                <p>ทำไมต้องมี API Versions เพราะเมื่อคุณเผยแพร่ API เป็น Public แล้วดังนั้น API ของคุณจะต้องไม่เกิดการ Breaking (อยู่ดี ๆ ใช้งานไม่ได้) ของ API โดยไม่แจ้งผู้ใช้ให้ทราบล่วงหน้า ดังนั้น API Versioning จะช่วยให้ป้องกันการเกิด Request ที่ไม่มีอยู่ เช่น จากการปรับปรุง Endpoints ดังตัวอย่างนี้</p>
+                <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 15px; white-space: pre-wrap; width: 300px; height: 180px; ">
+https://api.abc.com/User
+
+//Response result
+[
+    {
+        "title": "...",
+        "text": "..."
+    }
+        ...
+    ]</pre></p>  
+
+                <p>ถ้าหากวันนึงเราเเก้ไข API นี้ใหม่</p>
+                <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 15px; white-space: pre-wrap; width: 300px; height: 210px; ">
+https://api.abc.com/User
+                    
+//Response result
+{
+    "data" [
+        {
+            "title": "...",
+            "text": "..."
+        }
+            ...
+    ]
+}</pre></p>
+
+                <p>จะเห็นว่า API <code>https://api.abc.com/User</code> ส่วนปรับปรุงใหม่มีส่วนที่แตกต่างจากเดิมซึ่งจะทำให้เกิดปัญหากับ Clients ที่ใช้ API นี้อยู่โดยถ้าไม่ได้รับการปรับปรุงตาม API ใหม่ ดังนั้นเมื่อนำ API Versions มาช่วยแก้ปัญหาจะได้ดังนี้</p>
+                <p>#API Version ก่อนการแก้ไขสามารถใช้กับ Clients ได้ไม่มีปัญหา <code> https://api.abc.com/v1/User</code></p>
+                <p>#API Version หลังการแก้ไข และรอการปรับปรุง Clients เพื่อความเข้ากันได้ <code> https://api.abc.com/v2/User</code></p>
+
+
+                <section id="advice API">
+                <h4>คำเเนะนำการออกเเบบ API Versions</h4>
+                <p>โดยที่ : </p>
+                <ul>
+                    <li>โดย API version ควรจะ กำหนดเป็นส่วนหนึ่งใน URI</li>
+                    <li>โดย API version ควรจะ กำหนดไว้อยู่เสมอ (เช่น ค่าเริ่มเป็นเวอร์ชันล่าสุด)</li>
+                    <li>โดย API version ควรจะ ระบุด้วย 'v'</li>
+                    <li>ถ้าผู้ใช้งานพยายามเข้าถึง API ด้วยการไม่ระบุเวอร์ชัน ดังนั้นเขาก็ควรได้รับข้อความผิดพลาดตอบกลับ 404</li>
+                    <li>ถ้าผู้ใช้งานพยายามเข้าถึง API ด้วยการไม่ระบุ resource (เช่น GET .../api/v1) การตอบกลับอาจจะประกอบด้วยข้อมูลพื้นฐานเกี่ยวกับ API (เช่น ชื่อ API, และรายละเอียดอื่น ๆ)</li>
+                </ul>
+                <p>โดยอาจจะมี API Version หลายอันได้ ตัวอย่าง : </p>
+                <ul>
+                    <li>.../api/v1</li>
+                    <li>.../api/v2</li>
+                </ul>
+                <p>รายละเอียดของ APIs Version ควร เป็นไปตาม <a href="https://semver.org/" target="_blank" rel="noopener noreferrer" >semantic versioning</a> :</p>
+                </section>  
+
+
+
+                <section id="Metadata">
+                <h4>Metadata</h4>
+                <p>เพื่อให้การสนับสนุน API ของคุณ ควร ให้มีการตอบกลับคำขอ GET ไปยัง Base URI ของ API และส่งคืนรูปแบบข้อมูล Metadata ต่อไปนี้การตอบกลับ :</p>
+                <ul>
+                    <li>api_name: ชื่อ API</li>
+                    <li>api_version: API Version กับ Major และ minor versions</li>
+                    <li>api_released: วันที่ล่าสุดที่ปรับปรุง API</li>
+                    <li>api_documentation: ลิงก์สำหรับ API Documentation</li>
+                    <li>api_status: สถานะที่บ่งบอกว่า API นั้น Active หรือ Deprecated</li>
+                </ul>
+                <p>สามารถเพิ่มข้อมูล Metadata อื่นๆ สำหรับการตอบกลับ (ถ้าต้องการ)</p>
+                <p>ตัวอย่าง :</p>
+                <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 15px; white-space: pre-wrap; width: 580px; height: 200px; ">
+//GET /namespace/v1
+
+//HTTP 200 OK
+                    
+{
+    "api_name": "namespace",
+    "api_version": "1.1.3"
+    "api_released": "2021-04-06"
+    "api_documentation": "https://api.example.com/namespace/v1/docs"
+    "api_status": "active"
+}</pre></p>
+                </section>
+
+
+                
+
+                <h4 id="advice_all">คำเเนะนำอื่นๆ</h4>
+                <p>แนวทางและหลักการบางประการในการตัดสินใจว่า เมื่อใดจึงจำเป็นต้องใช้ API เวอร์ชันใหม่ :</p>
+                <ul>
+                    <li>คุณไม่ควรสร้างเวอร์ชัน API ใหม่ เมื่อคุณเพิ่มฟิลด์ / แอตทริบิวต์ให้กับ Resources ที่มีอยู่ ถ้าหากผู้ใช้สามารถเพิกเฉยต่อสิ่งเหล่านั้นได้ (กล่าวคือหากผู้ใช้ต้องไม่เพิ่มสิ่งเหล่านั้นในคำขอ)</li>
+                    <li>คุณไม่ควรสร้างเวอร์ชัน API ใหม่ ถ้าหากคุณเพิ่ม Resources ใหม่ โดยที่ลูกค้าไม่จำเป็นต้องใช้มันโดยตรง</li>
+                    <li>คุณต้องสร้างเวอร์ชัน API ใหม่ ถ้าหากคุณแก้ไขทรัพยากรที่มีอยู่ในลักษณะที่จะส่งผลกระทบต่อไคลเอนต์ (เช่นฟิลด์บังคับใหม่การลบฟิลด์ ... )</li>
+                    <li>คุณต้องสร้างเวอร์ชัน API ใหม่ ถ้าหากคุณมี Resources ใหม่ โดยหากผู้ใช้ต้องได้ใช้มันด้วย</li>
+                    <li>คุณต้องสร้างเวอร์ชัน API ใหม่ ถ้าหากคุณสร้างประเภทข้อผิดพลาดใหม่</li>
+                </ul>
+        </section>
+
+
+        <section id="Documentatian">
+            <h2>Documentatian</h2>
+            <p>เอกสาร (API Docs) เป็นสิ่งที่สำคัญสำหรับนักพัฒนาในการใช้ API โดย API ที่แตกต่างกันจะมีลักษณะการทำงานที่แตกต่างกัน ซึ่งต้องใช้พารามิเตอร์ที่แตกต่างกัน เช่น วิธีการ HTTPS การ Response data ของ API ดังนั้นนักพัฒนาส่วนใหญ่จะชอบเอกสารที่ดีสำหรับใช้อ้างอิงการใช้งาน API</p>
+            <p>มีเครื่องมือดี ๆ มากมาย เพื่อที่จะช่วยนักพัฒนาในการสร้างเอกสาร API ดังนี้ :</p>
+            <p><a href="https://github.com/swagger-api/swagger-ui">Swagger</a>Swagger: ออกแบบและสร้างโมเดล API ตามมาตรฐานตามข้อกำหนด เพิ่มประสบการณ์ (UX) ของนักพัฒนาด้วยเอกสาร API แบบโต้ตอบได้</p>
+            <p><a href="https://github.com/slatedocs/slate">Slate</a>Slate: Slate ช่วยให้คุณสร้างเอกสาร API ที่สวยงาม ฉลาด ความสามารถการตอบสนอง ที่สำคัญ Slate คือโครงการโอเพ่นซอร์สและใช้งานได้ฟรี</p>
+        </section>
+
+
+        <section id="Security">
+            <h2>Security Features</h2>
+            <p>เป็นที่นิยมในการใช้คุณสมบัตินโยบายความปลอดภัยที่มีอยู่ในแพลตฟอร์ม API Gateway แทนที่จะใช้นโยบาย (Policy) การเข้าถึงใน back-end API ตรง ๆ แต่วิธีใดก็ตามควรจะมีรูปแบบความปลอดภัยดังนี้</p>
+            <table border="1" style="width:1000px; border-collapse: collapse; table-layout: fixed;">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th style="width: 80px; padding: 8px; text-align: left;">ความปลอดถัย</th>
+                    <th style="width: 100px; padding: 8px; text-align: left;">เหตุการณ์ของ API</th>
+                    <th style="width: 130px; padding: 8px; text-align: left;">รายละเอียด</th>
+                    <th style="width: 130px; padding: 8px; text-align: left;">ความจำเป็นในการนำไปใช้</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px;">HTTP verbs</td>
+                    <td style="padding: 8px;">Listeners->Path</td>
+                    <td style="padding: 8px;">HTTP verbs ต่าง ๆ สามารถเลือกใช้ได้จาก Path ของ API ที่กำหนดไว้</td>
+                    <td style="padding: 8px;">ควร</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">SSL</td>
+                    <td style="padding: 8px;">Listeners</td>
+                    <td style="padding: 8px;">ใช้ SSL protocol (เช่น TLS 1.2)</td>
+                    <td style="padding: 8px;">ควร</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">Digital Certificate</td>
+                    <td style="padding: 8px;">Filter -> Integrity</td>
+                    <td style="padding: 8px;">สามารถ Filters สำหรับใช้ Signature เพื่อการตรวจสอบตัวอย่างเช่น API Token หรือ JWT sign</td>
+                    <td style="padding: 8px;">เป็น Optional หรือขึ้นอยู่กับ Business requirements</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">JWT</td>
+                    <td style="padding: 8px;">Filter -> Integrity</td>
+                    <td style="padding: 8px;">ข้อความสามารถเข้ารหัสให้อยู่ในรูปแบบ JWT</td>
+                    <td style="padding: 8px;">เป็น Optional หรือขึ้นอยู่กับ Business requirements</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">API Keys</td>
+                    <td style="padding: 8px;">Filter -> Authentication</td>
+                    <td style="padding: 8px;">สามารถ Filters สำหรับการ Authentication ผู้ใช้งาน เช่น API Keys หรือ API Token</td>
+                    <td style="padding: 8px;">ควร</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">OAuth</td>
+                    <td style="padding: 8px;">Filter -> OAuth</td>
+                    <td style="padding: 8px;">สามารถใช้ OAuth สำหรับมอบสิทธิ์เข้าถึง Data resources สำหรับผู้ใช้งาน</td>
+                    <td style="padding: 8px;">เป็น Optional หรือขึ้นอยู่กับ Business requirements</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">CORS</td>
+                    <td style="padding: 8px;">Listeners->Path</td>
+                    <td style="padding: 8px;">CORS สามารถจำกัดการเข้าถึงในระดับ Path level</td>
+                    <td style="padding: 8px;">ควร</td>
+                  </tr>
+                </tbody>
+              </table> 
+
+              <h4>ประเด็นอื่น ๆ เกี่ยวกับความปลอดภัย</h4>
+              <p>ก่อนการพัฒนา API นักพัฒนาต้องระบุช่องโหว่และการแก้ไขข้อบกพร่องด้านความปลอดภัยเป็นไปได้ที่อาจเกิดขึ้น (Threat Modeling) มิฉะนั้นอาจจะโดนคุกคามฐานข้อมูลและระบบ</p>
+              <ul>
+                <li>ใช้ SSL เสมอสำหรับทุก APIs</li>
+                <li>ใช้มาตรฐานสำหรับการ Authentication และ Authorization เช่น JWT หรือ OAuth2 สำหรับการ Authenticate API ก่อนการ Responding ข้อมูลใด ๆ ที่สำคัญในขั้นตอน Request</li>
+                <li>อย่าเก็บข้อมูลที่สำคัญ (Sensitive data) ใน JWT payload ที่ง่ายสำหรับการ Decoding</li>
+                <li>ใช้การ Encryption ทั้งหมดสำหรับข้อมูลที่สำคัญ (Sensitive data) อย่าเก็บ Raw password ใน databases โดยให้ Encrypt Password ก่อนการบันทึกเสมอ</li>
+                <li>ใช้วิธีการกำหนด Rate Limiting สำหรับการโจมตีแบบ DDoS attacks/brute-force</li>
+                <ul>
+                    <li><code>Return 429 “Too Many Requests”</code>  ใช้สำหรับการแจ้งเกิดเหตุการณ์ Too many requests ที่มาจาก Origin เดียวกันอย่างรวดเร็ว</li>
+                    <li>เพิกถอน (Revoke) ข้อมูล Client credential หรือทำ Blacklist ได้เสมอหากไคลเอ็นต์ละเมิดการใช้งาน API</li>
+                </ul>
+                <li>Validate inputs request ทั้งหมดก่อน Responding คำขอใด ๆ เพราะการปล่อยให้ข้อมูลที่ไม่ถูกต้องนี้เข้าสู่แอปพลิเคชันอาจทำให้เกิดผลลัพธ์ที่ไม่ดีที่ไม่สามารถคาดเดาได้</li>
+                <li>อย่าส่งผ่านข้อมูลที่ละเอียดอ่อน (Sensitive data) ใน URL เช่น รหัสผ่าน JWT token หรือ API keys เนื่องจากข้อมูลนี้อาจจะเก็บไว้ในบันทึกของเบราว์เซอร์และเซิร์ฟเวอร์</li>
+                <ul>
+                    <li>ตัวอย่างที่ไม่ควร <code>https://api.example.com/namespace/v1/auth/login/username=abcd123456789&password=123321</code></li> 
+                    <li>URL ด้านบนแสดงรหัสผ่าน ดังนั้นอย่าใช้รูปแบบนี้ในระบบ Authentication</li>
+                </ul>
+              </ul>
+        </section>
+
+
+        
+        <section id="Character">
+            <h2>Characteristics of Good Restful APIs</h2>
+            <ul>
+                <li>พิจารณาขนาดความยาวของ Parameter lists ด้วย</li>
+                <li>สามารถใช้ Pagination และ Sorting ด้วย date กำหนดตัวเลขขนาดของ Records ต่อหน้าได้</li>
+                <li>กำหนด Versioning ของ API อย่างเหมาะสม</li>
+                <li>อ่านง่ายและใช้งานง่ายสำหรับ ควรทำตามที่ชื่อและโปรโตคอลที่แนะนำ</li>
+                <li>เพื่อประสิทธิภาพพยามให้การทำงานไม่มีวิธีใดขึ้นอยู่กับผลลัพธ์ของอีกวิธีหนึ่ง (Stateless)</li>
+                <li>สามารถจัดการข้อผิดพลาดได้ด้วย HTTP Status codes</li>
+                <li>ความเหมาะสมของ Parameter names ความเหมาะสมของ Naming conventions ความเหมาะสมของ Lowercase letters เพื่อใช้ใน URI paths (อย่าใช้คำย่อ)</li>
+                <li>ความพร้อมใช้งานและปลอดภัยสูง</li>
+                <li>มีความสามารถของ API Versioning Pagination และ Sorting</li>
+                <li>มีเอกสาร API Docs ที่ดีเพราะ Developer ส่วนใหญ่นั้นชอบเอกสารอธิบายที่ดี</li>
+                <li>ออกแบบหรือทำให้เรียบง่ายเข้าไว้ K.I.S.S.</li>
+            </ul>
+        </section>
+         
+        
+        <section id="scal api">
+            <h2>How to scale the API</h2>
+            <ul>
+                <li>สามารถกำหนด Rate Limiting ได้</li>
+                <li>สถาปัตยกรรม Microservice ซึ่งแต่ละบริการได้รับการออกแบบมาเพื่อให้ทำงานแยกฟังก์ชันของการทำงานออกเป็นบริการส่วน ๆ ซึ่งหากฟังก์ชันใดเกิดมีปัญหาหรือใช้งานไม่ได้ ระบบอื่น ๆ ก็จะยังสามารถทำงานต่อได้ ดั้งนั้นควรใช้บริการหลายตัวบนอินสแตนซ์ที่ทำงานบนเครื่องหลายเครื่อง ด้วยด้านหลังตัวโหลดบาลานเซอร์</li>
+                <li>การทำ Caching static files</li>
+                <li>ใช้ CDN (Content Delivery Network)</li>
+                <li>ทำ indexing กับบางข้อมูล</li>
+                <li>ทำ Filtering และ Pagination แทนที่จะแสดงข้อมูลทั้งหมด</li>
+                <li>หากใช้ RDB ให้ทำ Normalized database และใช้ SQL joins ให้น้อยที่สุด</li>
+                <li>นำ API Gateway มาช่วยในการจัดการ Microservice เช่น Kong</li>
+            </ul>
+        </section>
+
+      
+        <section id="Conclusion">
+            <h4>Conclusion</h4>
+            <p>ประเด็นทั้งหมดนี้เป็นเพียงความเห็นส่วนตัว โดยสิ่งเหล่านี้ไม่ใช่กฎที่ตายตัว แต่เป็นเพียงเคล็ดลับจากประสบการณ์ส่วนตัว 😅&nbsp เพราะเนื่องจากการออกแบบและการกำหนดรูปแบบมาตรฐาน API นั้นไม่ได้มีมาตรฐานตายตัว โดยสิ่งที่สำคัญควรอธิบายและตกลงกับทีมพัฒนาให้ชัดเจนนั้นเป็นสิ่งสำคัญ ไม่ว่าจะเป็นการตั้งชื่อ URL Path การตั้งชื่อ Attributes การกำหนด JSON format เป็นต้น</p>
+            <p>แต่สิ่งที่สำคัญสูงสุดเมื่อ API ได้ Public แล้ว สำหรับความปลอดภัยในบาง Endpoints นั้นก็เป็นเรื่องที่สำคัญ การ Revoke ต้องสามารถทำได้หากไคลเอ็นต์ละเมิดการใช้งาน API และพิจารณาการใช้งาน API แบบ Stateless และ Stateful ควบคู่กันได้ในบางกรณี</p>
+            <p>นอกจากนี้ยังมีข้อมูลที่น่าสนใจสามารถเอามาปรับใช้ร่วมกับการออกแบบและใช้อ้างอิงเพื่อนำมาปรับใช้เกี่ยวกับการออกแบบสเปกของ JSON รายละเอียดดังนี้ <a href="https://jsonapi.org/format/">JSON API Specification</a></p>
+        </section>
+        
+
+          
+
+
+
+
+
+
+
+
+        <script>
+            // เลือกทุกส่วนของ <section> และลิงก์ใน .sidebar
+            const sections = document.querySelectorAll("section");
+            const sidebarLinks = document.querySelectorAll(".sidebar a");
+    
+            // ฟังก์ชันตรวจสอบส่วนที่แอคทีฟ
+            function highlightActiveSection() {
+                let currentSection = "";
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.scrollY >= sectionTop - sectionHeight / 3) {
+                        currentSection = section.getAttribute("id");
+                    }
+                });
+    
+                // อัปเดตคลาสของลิงก์ใน sidebar
+                sidebarLinks.forEach(link => {
+                    link.classList.remove("active");
+                    if (link.getAttribute("href").includes(currentSection)) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+    
+            // เพิ่ม event listener ให้ตรวจสอบการเลื่อน
+            window.addEventListener("scroll", highlightActiveSection);
+        </script>
+
+
+            <h4>Chaloemphon Arthan</h4>
+        
+    </div>
+</body>
+</html>
