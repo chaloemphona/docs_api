@@ -82,12 +82,12 @@
         }
 
         .note-box {
-        background-color: #f9f9f9;
-        border-left: 4px solid #007BFF;
-        padding: 15px;
-        margin-top: 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+            border-left: 4px solid #007BFF;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .note-box h3 {
@@ -98,7 +98,7 @@
 
         .note-box p {
             margin: 10px 0;
-            color: #333;
+            color: #555;
         }
 
         .note-box ul {
@@ -112,7 +112,7 @@
         }
 
         .note-box ul li strong {
-            color: #333;
+            color: #555;
         }
 
 
@@ -137,16 +137,16 @@
         } */
 
         caption {
-        caption-side: top;
-        font-size: 1.2em;
-        font-weight: bold;
-        margin-bottom: 8px;
+            caption-side: top;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
         code {
-        font-size: 1.2em; 
-        font-weight: bold; 
-        color: #d94416;  
+            font-size: 1.2em; 
+            font-weight: bold; 
+            color: #d94416;  
         }
 
         /* section {
@@ -185,28 +185,28 @@
             cursor: pointer; /* เคอร์เซอร์เป็นมือ */
         }
 
-
-        
-
+        ul {
+            color: #555; /* เปลี่ยนสีข้อความของ ul และ li เป็นสีแดง */
+        }
 
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h3>สารบัญ</h3>
+        <h3><a href="#RE_API">สารบัญ</a></h3>
         <a href="#Intro">Intro</a>
-        <a href="#API">API</a>
+        <a href="#API_01">API</a>
         <!-- <ul>
             <li><a href="#REST">REST</a></li>
             <li><a href="#RESTful-API">RESTful API</a></li>
         </ul> -->
-        <a href="#RESTful-API-Design">RESTful-API-Design</a>
+        <a href="#RESTful_API_Design">RESTful-API-Design</a>
         <ul>
             <li><a href="#disc">คำศัพท์</a></li>
             <li><a href="#desc">คำอธิบาย</a></li>
-            <li><a href="#GOOD-Design">รูปเเบบการออกเเบบที่ดี</a></li>
-            <li><a href="#user method">การเลือกใช้ HTTP Method</a></li>
+            <li><a href="#GOOD_Design">รูปเเบบการออกเเบบที่ดี</a></li>
+            <li><a href="#user_method">การเลือกใช้ HTTP Method</a></li>
             <li><a href="#CRUD">ตัวอย่าง CRUD API </a></li>
             <ul>
                 <li><a href="#READ">READ</a></li>
@@ -216,12 +216,12 @@
                 <li><a href="#ROUTES">ROUTES RESOURCE</a></li>
             </ul>
         </ul>
-        <a href="#HTTP methods">HTTP methods</a>
-        <a href="#HTTP Status Code">HTTP Status Code</a>
-        <a href="#Response Data Format">Response Data Format</a>
+        <a href="#HTTP_methods">HTTP methods</a>
+        <a href="#HTTP_Status_Code">HTTP Status Code</a>
+        <a href="#Response_Data_Format">Response Data Format</a>
         <ul>
-            <li><a href="#Result Messages">Result Messages</a></li>
-            <li><a href="#Error Messages">Error Messages</a></li>
+            <li><a href="#Result_Messages">Result Messages</a></li>
+            <li><a href="#Error_Messages">Error Messages</a></li>
         </ul>
         <a href="#FSP">Filtering, Sorting, Pagination</a>
         <ul>
@@ -229,9 +229,9 @@
             <li><a href="#Sorting">Sorting</a></li>
             <li><a href="#Pagination">Pagination</a></li>
         </ul>
-        <a href="#API Versioning">API Versioning</a>
+        <a href="#API_Versioning">API Versioning</a>
         <ul>
-            <li><a href="#why ver api">ทำไมต้องมี Verion API</a></li>
+            <li><a href="#why_ver_api">ทำไมต้องมี Verion API</a></li>
             <li><a href="#ADDDAPI">คำเเนะนำการออกเเบบ API Versions</a></li>
             <li><a href="#Metadata">Metadata</a></li>
             <li><a href="#advice_all">คำเเนะนำอื่นๆ</a></li>
@@ -239,7 +239,7 @@
         <a href="#Documentatian">Documentatian</a>
         <a href="#Security">Security Features</a>
         <a href="#Character">Characteristics of Good Restful APIs</a>
-        <a href="#scal api">How to scale the API</a>
+        <a href="#scal_api">How to scale the API</a>
         <a href="#Conclusion">Conclusion</a>
 
 
@@ -254,21 +254,20 @@
           <li><a href="#Token">การยืนยันตัวตนแบบโทเค็น</a></li>
         </ul>
 
-        <a href="#Docs APIpos">คู่มือสำหรับการทดสอบ API ด้วย Postman</a>
+        <a href="#Docs_APIpos">คู่มือสำหรับการทดสอบ API ด้วย Postman</a>
         <a href="#APIPOSTMAN">API คืออะไร</a>
         <a href="#Postman">Postman คืออะไร</a>
         <ul>
-          <li><a href="#Guide postman">แนวทางปฏิบัติในการทดสอบ API with Postman</a></li>
-          <li><a href="#Chall postman">ความท้าทายในการทดสอบ API มีอะไรบ้าง</a></li>
-          <li><a href="#Bene postman">Postman มีประโยชน์ต่อการทดสอบ API อย่างไร</a></li>
-          <li><a href="#test postman">ใช้ Postman เพื่อทดสอบ API ได้อย่างไร</a></li>
+          <li><a href="#Guide_postman">แนวทางปฏิบัติในการทดสอบ API with Postman</a></li>
+          <li><a href="#Chall_postman">ความท้าทายในการทดสอบ API มีอะไรบ้าง</a></li>
+          <li><a href="#Bene_postman">Postman มีประโยชน์ต่อการทดสอบ API อย่างไร</a></li>
+          <li><a href="#test_postman">ใช้ Postman เพื่อทดสอบ API ได้อย่างไร</a></li>
           <li><a href="#WorkAndColl">Workspace และ Collection คืออะไร</a></li>
         </ul>       
-        <a href="#step postman">ขั้นตอนการใช้ POstman</a>
+        <a href="#step_postman">ขั้นตอนการใช้ POstman</a>
         
         
-        <!-- Docs APIpos      Postman      Guide postman     Chall postman     Bene postman     test postman     WorkAndColl     step postman -->
-        <!-- Authentication  what_Aut   tica_tiza   Common   Basic    Key    Token -->
+
     </div>
 
 
@@ -288,7 +287,7 @@
             </p>
         </section>
 
-        <section id="API">
+        <section id="API_01">
             <h2>API</h2>
             <p>
                 คำว่า API นั้นย่อมาจาก Application Programming Interface ซึ่ง API 
@@ -298,7 +297,7 @@
             </p>
         
 
-            <div class="note-box">
+            <div class="note_box">
                 <h3>Note: Endpoints คืออะไร?</h3>
                 <p><strong>Endpoint</strong> คือ Term ของ URL Path เป็นเหมือนภาษาพูดที่ใช้เรียก Path ของ API โดยจะเรียก URLs ทั้งหมดว่า API แต่ละ URL จะเรียกว่า Endpoint</p>
                 <ul>
@@ -316,7 +315,7 @@
         </section>
         
 
-        <section id="RESTful-API">
+        <section id="RESTful_API">
             <h2>RESTful API</h2>
             <p>RESTful นั้นพัฒนามาจากรากฐานสถาปัตยกรรมรูปแบบของ REST และใช้ HTTP Methods เรียกว่า RESTful web services
 
@@ -328,7 +327,7 @@
         </section>
 
 
-        <section id="RESTful-API-Design">
+        <section id="RESTful_API_Design">
             <h2>RESTful API Design</h2>
             <p>API นั้นสามารถสร้างได้จากหลากหลายภาษา (Server side script Language Programming) ไม่ว่าจะเป็น PHP Ruby JS Java Python และ Golang เป็นต้น</p>
         </section>
@@ -356,7 +355,7 @@
         </section>
 
 
-        <section id="GOOD-Design">
+        <section id="GOOD_Design">
             <h3>รูปแบบของ Resource Names ที่ดี</h3>
             <p>- ควรเป็นคำนาม อย่าใช้คำกริยาในการอธิบาย</p>
             <p>- ชื่อ Resource ควรเป็นเอกพจน์สำหรับแบบ Instance Resource</p>
@@ -380,14 +379,66 @@
             </ul>
 
 
-            <p><strong>ตัวอย่างโค้ดที่ดี (ยังไม่ได้ปรับ)</strong></p>
+            <p><strong>ตัวอย่างโค้ดที่ดี Geojson</strong></p>
             <p><code>GET</code> <a href="http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020</a></p>
-            <p><strong>ตัวอย่างโค้ดที่เเย่ (ยังไม่ได้ปรับ)</strong></p>
-            <p><code>GET</code> <a href="http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/api/v1/accidents/grids-dbscan-2022-2020</a></p>
-        </section>
+            <p><strong>ตัวอย่างโค้ดที่ดี Github</strong></p>
+            <p><code>GET</code> <a href="http://127.0.0.1:8000/api/v1/github/accident/heatmap-rvp-death" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/api/v1/github/accident/heatmap-rvp-death</a></p>
+            <p><strong>ตัวอย่างโค้ดที่ดี DuckDB ที่มีการใช้ Token</strong></p>
+            <p><code>GET</code><a href="#" id="open-api-link" target="_blank" rel="noopener noreferrer"> http://127.0.0.1:8000/api/v1/duckDBs/places/th/region?region=bangkok</a></p>
+            <script>
+              const token = "311bd9d2-f4d8-40da-a64a-9219433df514";
+              const BASE_URL = "http://127.0.0.1:8000";
+              document.getElementById("open-api-link").addEventListener("click", (event) => {
+                  event.preventDefault();
+                  const url = `${BASE_URL}/api/v1/duckDBs/places/th/region?region=bangkok`;
+                  const newTab = window.open();
+                  fetch(url, { 
+                      method: "GET",
+                      headers: {
+                          "Authorization": `Bearer ${token}`,
+                          'Content-Type': 'application/json',
+                          "ngrok-skip-browser-warning": 'skip-browser-warning'    
+                      },
+                  })
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error(`HTTP error! status: ${response.status}`);
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      newTab.document.write(`
+                          <html>
+                              <head>
+                                  <title>API Response</title>
+                              </head>
+                              <body>
+                                  <h1>API Response</h1>
+                                  <pre>${JSON.stringify(data, null, 2)}</pre>
+                              </body>
+                          </html>
+                      `);
+                  })
+                  .catch(error => {
+                      newTab.document.write(`
+                          <html>
+                              <head>
+                                  <title>Error</title>
+                              </head>
+                              <body>
+                                  <h1>Error</h1>
+                                  <p>${error.message}</p>
+                              </body>
+                          </html>
+                      `);
+                  });
+              });
+          </script>
+
+            </section>
 
 
-        <section id="user method">
+        <section id="user_method">
             <h2>การเลือกใช้ HTTP Method ให้เหมาะสมกับการใช้งาน</h2>
             <p>ปกติการสร้าง API เราจะไม่ใช้ verb ของ API นั้นๆให้มาอยู่ใน path เช่น /GetUser, /CreateUser การทำเเบบนี้ถือว่าผิดหลักการในการออหเเบบ ทุกคนก็อาจจะสงสัยว่า "เเล้วเราจะรู้ได้อย่างไรว่า API ตัวไหนมี Action อะไร ทำอะไรได้บ้าง" เลยได้มีการกำหนด HTTP Method ขึ้นมา โดย HTTP Method ที่สำคัญมัดังนี้</p>
             <p>1. POST เป็น method สำหรับสร้างข้อมูลใหม่ โดยจะส่งข้อมูลในการสร้างผ่านทาง body เช่นแทนที่จะเขียนว่า /createUsers ก็เขียนเป็น /users ที่มี method POST แทน</p>
@@ -396,7 +447,7 @@
             <p>4. GET เป็น method สำหรับเรียกข้อมูล และจะไม่มีผลกระทบอะไรกับข้อมูลในระบบ</p>
             <p>5. DELETE เป็น method สำหรับลบข้อมูลที่มีอยู่ในระบบ</p>
 
-            <div class="note-box">
+            <div class="note_box">
               <h3>Note: HTTP Method</h3>
               <p><strong>HTTP Method</strong> เป็นตัวสื่อถึง action ของ API นั้นๆ โดยที่เราไม่จำเป็นต้องใส่ action จริงๆ เข้าไปใน path</p>
           </div>
@@ -686,7 +737,7 @@
                     </section>  
 
 
-        <section id="HTTP methods">
+        <section id="HTTP_methods">
             <h2>HTTP methods</h2>
             <p>HTTP methods คือ กริยา หรือบางทีเรียก HTTP Verbs โดยเป็นการดำเนินการบนของมาตรฐาน HTTP Request ดังนี้</p>
             <table border="1" style="width:70%; border-collapse: collapse; table-layout: fixed;">
@@ -730,7 +781,7 @@
         </section>
 
 
-        <section id="HTTP Status Code">
+        <section id="HTTP_Status_Code">
             <h2>HTTP response status code</h2>
             <p>คำอธิบายเเละความหมายของ <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes" target="_blank" rel="noopener noreferrer">HTTP/1.1:Statatus Code Definitiond</a></p>
 
@@ -1044,11 +1095,11 @@
         </section>
 
 
-        <section id="Response Data Format">
+        <section id="Response_Data_Format">
             <h2>Response Data Format</h2>
         </section>
 
-        <section id="Result Messages">
+        <section id="Result_Messages">
             <h4 >Result Messages</h4>
             <P>สำหรับการตอบกลับของข้อมูลนั้นจะมีรูปเเบบดังนี้</P>
             <p><code>GET /group-members</code> จะ Return ลิสของ Objects ในรูปเเบบของ <code>Data</code></p>
@@ -1086,7 +1137,7 @@
             <p>ถ้าเป็นไปได้ควรมี Links ที่สามารถไปหน้าถัดไปเเละหน้าก่อนหน้า เมื่อ URL มีการกำหนด offset เเละ limit</p>
           </section>
 
-          <section id="Error Messages">
+          <section id="Error_Messages">
             <h4 >Error Messages</h4>
             <p>เป็นส่วนที่เกี่ยวกับ Errors เมื่อมีเหตุการณ์บางอย่างที่เกิดขึ้นไม่ถูกต้องโดยในส่วนของ Body ของการตอบกลับ HTTP มีตัวอย่างนี้</p>
             <p>Request <code>GET /User?state=super</code></p>
@@ -1259,12 +1310,12 @@ Page 50: /customers?page=50&limit=10</pre></p>
 
 
 
-                <section id="API Versioning">
+                <section id="API_Versioning">
                   <h2>API Versioning</h2> 
                   <p>API Versions คือส่วนที่บอกว่า APIs มีรุ่นและการเปลี่ยนแปลงอย่างไร และปัจจุบันเป็นรุ่นอะไร</p>
                 </section>
 
-                <section id="why ver api">
+                <section id="why_ver_api">
                 <h4>ทำไมต้องมี API Versions</h4>
                 <p>ทำไมต้องมี API Versions เพราะเมื่อคุณเผยแพร่ API เป็น Public แล้วดังนั้น API ของคุณจะต้องไม่เกิดการ Breaking (อยู่ดี ๆ ใช้งานไม่ได้) ของ API โดยไม่แจ้งผู้ใช้ให้ทราบล่วงหน้า ดังนั้น API Versioning จะช่วยให้ป้องกันการเกิด Request ที่ไม่มีอยู่ เช่น จากการปรับปรุง Endpoints ดังตัวอย่างนี้</p>
                 <p><pre style="border: 1px solid #000; padding: 10px; border-radius: 5px; background-color: #f9f9f9; font-family: monospace; font-size: 15px; white-space: pre-wrap; width: 300px; height: 180px; ">
@@ -1469,7 +1520,7 @@ https://api.abc.com/User
         </section>
          
         
-        <section id="scal api">
+        <section id="scal_api">
             <h2>How to scale the API</h2>
             <ul>
                 <li>สามารถกำหนด Rate Limiting ได้</li>
@@ -1614,7 +1665,7 @@ print(response.json())</pre></p>
 <br>
 
 
-         <section id="Docs APIpos">
+         <section id="Docs_APIpos">
           <h1>คู่มือสำหรับการทดสอบ API ด้วย Postman</h1>
           <div style="text-align: center;">
             <img src="https://github.com/chaloemphona/image/blob/main/006.png?raw=true" alt="RESTful-API">
@@ -1658,14 +1709,14 @@ print(response.json())</pre></p>
 
 
        
-        <section id="Guide postman">
+        <section id="Guide_postman">
           <h2>แนวทางปฏิบัติที่ดีที่สุดที่คุณสามารถปฏิบัติตามได้เมื่อคุณทดสอบ API ด้วย Postman คืออะไร</h2>
           <p>สิ่งพื้นฐานที่สุดคือการมีสภาพแวดล้อมการทดสอบเฉพาะของคุณเอง คุณสามารถสร้างสภาพแวดล้อมการทดสอบแยกต่างหากด้วยข้อมูลจำลองสำหรับการทดสอบที่ปลอดภัยและค้นหาข้อจำกัดของแอปพลิเคชันของคุณ ไม่เพียงแต่กรณีการทดสอบที่ประสบความสำเร็จเท่านั้น แต่คุณยังสามารถตรวจสอบกรณีการทดสอบที่ผิดพลาดหรือผิดพลาดได้ด้วยอินพุตที่แตกต่างกัน นอกจากนี้ คุณยังสามารถทำการทดสอบ API อัตโนมัติเพื่อให้แน่ใจว่าครอบคลุมอย่างสม่ำเสมอและลดข้อผิดพลาดของมนุษย์ให้เหลือน้อยที่สุด โดยบูรณาการเข้ากับกระบวนการ CI/CD เมื่อทำได้ นอกจากนี้ คุณยังสามารถดำเนินการทดสอบ API ในทุกขั้นตอนของการพัฒนา ตั้งแต่การออกแบบไปจนถึงการผลิต เพื่อระบุและแก้ไขปัญหาในระยะเริ่มต้นและรักษาคุณภาพของ API</p>
         </section>
 
 
        
-        <section id="Chall postman">
+        <section id="Chall_postman">
           <h2>ความท้าทายในการทดสอบ API มีอะไรบ้าง?</h2>
           <p>การทดสอบ API มีปัญหาในการรับรองความครอบคลุมและการออกแบบการทดสอบที่มีประสิทธิภาพ โครงสร้าง API ที่เรียบง่ายทำให้การสร้างกรณีทดสอบง่ายขึ้น ในขณะที่ API ที่ซับซ้อนซึ่งมีพารามิเตอร์จำนวนมากจำเป็นต้องมีการออกแบบที่ซับซ้อน เพื่อรักษาความเกี่ยวข้อง ให้ปรับปรุงการครอบคลุมการทดสอบตามความต้องการทางธุรกิจที่เปลี่ยนแปลงไป การจัดลำดับการเรียกใช้ API อย่างเหมาะสมและการสำรวจเงื่อนไขขอบเขตและประสิทธิภาพมีความสำคัญต่อการทดสอบที่ประสบความสำเร็จ</p>
           <p>การทดสอบสถานการณ์เชิงลบอาจมีความซับซ้อนและใช้เวลานาน โดยมักต้องมีการสร้างทรัพยากรใหม่เพื่อจำลองกรณีการใช้งานเฉพาะ นอกจากนี้ จำนวน API และกรณีการใช้งานที่เพิ่มมากขึ้นยังทำให้ต้องจัดสรรทรัพยากรบุคคลจำนวนมากสำหรับการทดสอบด้วยตนเอง ซึ่งอาจทำให้เกิดความล่าช้าในการปรับใช้ การรับรองประสิทธิภาพและฟังก์ชันการทำงานที่สม่ำเสมอต้องอาศัยการทดสอบ API ในสภาพแวดล้อมที่แตกต่างกันหลายแบบ ตั้งแต่การพัฒนาไปจนถึงการผลิต ซึ่งเป็นความท้าทายที่สำคัญเช่นกัน เนื่องจากเป็นงานที่ค่อนข้างซับซ้อน</p>
@@ -1674,7 +1725,7 @@ print(response.json())</pre></p>
 
 
         
-        <section id="Bene postman">
+        <section id="Bene_postman">
           <h2>Postman มีประโยชน์ต่อการทดสอบ API มากเพียงใด?</h2>
           <ul>
             <li>การรับรองคุณภาพ: การทดสอบ API รักษาความไว้วางใจและชื่อเสียงโดยการรับรองประสิทธิภาพที่เชื่อถือได้</li>
@@ -1691,7 +1742,7 @@ print(response.json())</pre></p>
 
 
         
-        <section id="test postman">
+        <section id="test_postman">
           <h2>จะใช้ Postman เพื่อทดสอบ API ได้อย่างไร?</h2>
           <p>มาเริ่มกระบวนการทีละขั้นตอนนี้โดยดาวน์โหลด Postmanเมื่อดาวน์โหลดแล้วให้ติดตั้งบนคอมพิวเตอร์ของคุณและเปิด Postman</p>
         </section>
@@ -1706,26 +1757,35 @@ print(response.json())</pre></p>
         </section>
 
         
-        <section id="step postman">
+        <section id="step_postman">
           <p>ขั้นตอนต่อไป ให้ป้อน URL Endpoint สำหรับการทดสอบ Postman. Endpoint คือจุดสื่อสารของ API และเป็น URL หรือ URI ภาพหน้าจอด้านล่างจะแสดงขั้นตอนการสร้างคำขอ GET</p>
           <div style="text-align: center;">
             <img src="https://github.com/chaloemphona/image/blob/main/0010.png?raw=true" alt="RESTful-API">
+            <img src="https://github.com/chaloemphona/image/blob/main/002.png?raw=true" alt="RESTful-API">
+            <img src="https://github.com/chaloemphona/image/blob/main/006.png?raw=true" alt="RESTful-API">
+            <img src="https://github.com/chaloemphona/image/blob/main/007.png?raw=true" alt="RESTful-API">
+            <img src="https://github.com/chaloemphona/image/blob/main/009.png?raw=true" alt="RESTful-API">
+            
         </div>
         </section>
 
 
 
-        
 
-
-          
-
-
-
-
+<!-- ---------------------------- -->
+<!-- ---------------------------- -->
+<!-- ---------------------------- -->
+<!-- ---------------------------- -->
 
 
 
+
+
+
+<!-- ---------------------------- -->
+<!-- ---------------------------- -->
+<!-- ---------------------------- -->
+<!-- ---------------------------- -->
 
         <script>
             // เลือกทุกส่วนของ <section> และลิงก์ใน .sidebar
