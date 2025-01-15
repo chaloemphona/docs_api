@@ -179,14 +179,14 @@
             color: #ff7b00; /* สีตอนชี้*/
         }
         a:active {
-            color: #d9534f; /* สีคลิก */
+            color: #ff0800; /* สีคลิก */
         }
         a[rel="noopener noreferrer"] {
             cursor: pointer; /* เคอร์เซอร์เป็นมือ */
         }
 
         ul {
-            color: #555; /* เปลี่ยนสีข้อความของ ul และ li เป็นสีแดง */
+            color: #555; /**/
         }
 
     </style>
@@ -243,6 +243,9 @@
         <a href="#Conclusion">Conclusion</a>
 
 
+        <a href="#">*</a>
+
+
         <a href="#Authentication">Authentication</a>
         <ul>
           <li><a href="#tica_tiza">ความเเตกต่างระหว่าง</a></li>
@@ -253,6 +256,10 @@
           <li><a href="#Key">การยืนยันตัวตนด้วยรหัส API</a></li>
           <li><a href="#Token">การยืนยันตัวตนแบบโทเค็น</a></li>
         </ul>
+
+
+        <a href="#">*</a>
+
 
         <a href="#Docs_APIpos">คู่มือสำหรับการทดสอบ API ด้วย Postman</a>
         <a href="#APIPOSTMAN">API คืออะไร</a>
@@ -1772,14 +1779,24 @@ print(response.json())</pre></p>
 
 
 
+
+
+
 <!-- ---------------------------- -->
 <!-- ---------------------------- -->
 <!-- ---------------------------- -->
 <!-- ---------------------------- -->
 
 
-
-
+<div style="text-align: center;">
+  <section>
+    <h1>Chaloemphon Arthan</h1><code></code>
+    <h3>ชื่อเล่น <code>เต้ย</code> เกิดวันที่ <code>05 มิถุนายน 2545</code></h3>
+    <h3>ปัจจุบันกำลังศึกษาอยู่ที่ มหาวิทยาลัยนเรศวร คณะเกษตรศาสตร์ ทรัพยากรธรรมชาติเเละสิ่งเเวดล้อม</h3>
+    <h3>สาขา <code>ภูมิศาสตร์</code> ชั้นปีที่ <code>4</code></h3>
+    <h3><code>2568</code></h3>
+  </section>  
+</div>
 
 
 <!-- ---------------------------- -->
@@ -1788,15 +1805,10 @@ print(response.json())</pre></p>
 <!-- ---------------------------- -->
 
         <script>
-            // เลือกทุกส่วนของ <section> และลิงก์ใน .sidebar
-            const sections = document.querySelectorAll("section");
+            const sections = document.querySelectorAll("section");// เลือกทุกส่วนของ <section> และลิงก์ใน .sidebar
             const sidebarLinks = document.querySelectorAll(".sidebar a");
-    
-            // เลือกส่วนของ sidebar ที่ต้องเลื่อน
-            const sidebar = document.querySelector(".sidebar");
-
-            // ฟังก์ชันตรวจสอบส่วนที่แอคทีฟ และเลื่อน Sidebar ตาม
-            function highlightAndScrollSidebar() {
+            const sidebar = document.querySelector(".sidebar");// เลือกส่วนของ sidebar ที่ต้องเลื่อน
+            function highlightAndScrollSidebar() { // ฟังก์ชันตรวจสอบส่วนที่แอคทีฟ และเลื่อน Sidebar ตาม
                 let currentSection = "";
                 sections.forEach(section => {
                     const sectionTop = section.offsetTop;
@@ -1805,7 +1817,6 @@ print(response.json())</pre></p>
                         currentSection = section.getAttribute("id");
                     }
                 });
-
                 // อัปเดตคลาสของลิงก์ใน Sidebar
                 sidebarLinks.forEach(link => {
                     link.classList.remove("active");
@@ -1820,13 +1831,12 @@ print(response.json())</pre></p>
                     }
                 });
             }
-
             // เพิ่ม Event Listener สำหรับ Scroll
             window.addEventListener("scroll", highlightAndScrollSidebar);
         </script>
 
 
-            <h4>Chaloemphon Arthan</h4>
+            
         
     </div>
 </body>
